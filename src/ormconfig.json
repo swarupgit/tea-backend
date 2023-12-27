@@ -1,0 +1,12 @@
+{
+    "type": "mysql",
+    "host": "192.168.0.104",
+    "port": 8088,
+    "username": "root",
+    "password": "my-secret-pw",
+    "database": "service-world",
+    "entities": [
+        "src/**/**.entity{.ts,.js}"
+    ],
+    "synchronize": true
+}
