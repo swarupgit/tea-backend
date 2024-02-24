@@ -43,6 +43,9 @@ export class Order extends Document {
 
   @Prop({ default: false })
   isDeleted: boolean;
+
+  @Prop({ default: new Date() })
+  transactionDate: Date;
 }
 
 const OrderSchema = SchemaFactory.createForClass(Order);

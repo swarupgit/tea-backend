@@ -36,4 +36,7 @@ export class CreateOrderDto {
 
   @IsOptional()
   isDeleted: boolean;
+
+  @IsOptional()
+  transactionDate: Date;
 }
