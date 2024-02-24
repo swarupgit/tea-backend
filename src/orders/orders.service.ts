@@ -52,4 +52,28 @@ export class OrdersService {
   remove(id: number) {
     return `This action removes a #${id} order`;
   }
+
+  async filterRecord(request) {
+    let filter = { isDeleted: false };
+    if(request.from && request.to) {
+      filter['createdAt'] = { $gte: new Date(request.from), $lte: new Date(new Date(request.to).setUTCHours(23,59,59,999)) };
+    }
+    else {        
+      if(request.from && request.from.length) {
+        filter['createdAt'] = { $gte: new Date(request.from) };
+      }
+      if(request.to && request.to.length) {
+        filter['createdAt'] = { $lte: new Date(request.to) };
+      }
+    }
+    if(request.customer && request.customer.length) {
+      filter['customerId'] = { $eq: request.customer };
+    }
+    console.log(filter, request)
+    return {
+      result: await this.orderModel.find(filter),
+      message: 'filtered customer',
+    };
+  }
+
 }
