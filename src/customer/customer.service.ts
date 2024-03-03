@@ -45,14 +45,19 @@ export class CustomerService {
     return await this.customerModel.findOne({ isDeleted: false, _id: id });
   }
 
-  async update(customerDto: UpdateCustomerDto, customer: Customer) {
+  async updateCustomer(id: string, customerDto: UpdateCustomerDto) {
+    const customer = await this.customerModel.findById(id);
     customer.name = customerDto.name;
+    customer.address = customerDto.address;
+    customer.email = customerDto.email;
+    customer.mobile = customer.mobile;
     await customer.save({ validateBeforeSave: false });
 
     return { message: 'Customer updated successfully', result: customer };
   }
 
-  async remove(customer: Customer) {
+  async removeCustomer(id: string) {
+    const customer = await this.customerModel.findById(id);
     customer.isDeleted = true;
     await customer.save({ validateBeforeSave: false });
 

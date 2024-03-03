@@ -31,15 +31,13 @@ export class CustomerController {
     return this.customerService.findOne(id);
   }
 
-  @Post('/update-customer')
-  updateCustomer(@Body() customerDto: UpdateCustomerDto, @Request() request) {
-    const { customer } = request;
-    return this.customerService.update(customerDto, customer);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() customerDto: UpdateCustomerDto) {
+    return this.customerService.updateCustomer(id, customerDto);
   }
 
-  @Post('/delete-customer')
-  deleteCustomer(@Body() customerDto: UpdateCustomerDto, @Request() request) {
-    const { customer } = request;
-    return this.customerService.remove(customer);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.customerService.removeCustomer(id);
   }
 }

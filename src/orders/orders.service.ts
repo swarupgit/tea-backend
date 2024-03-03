@@ -45,8 +45,25 @@ export class OrdersService {
     return await this.orderModel.findOne({ isDeleted: false, _id: id });
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+    const updated = await this.orderModel.findByIdAndUpdate(id, {
+      type: updateOrderDto.type,
+      vchNo: updateOrderDto.vchNo,
+      clNo: updateOrderDto.clNo,
+      netLeafKgs: updateOrderDto.netLeafKgs,
+      rateKg: updateOrderDto.rateKg,
+      qlty: updateOrderDto.qlty,
+      creditAmount: updateOrderDto.creditAmount,
+      debitAmount: updateOrderDto.debitAmount,
+      note: updateOrderDto.note,
+      customerId: updateOrderDto.customerId,
+      transactionDate: updateOrderDto.transactionDate,
+    });
+    console.log('updated data ', updated);
+    return {
+      result: updated,
+      message: 'Record updated successfully',
+    };
   }
 
   remove(id: number) {
@@ -55,25 +72,26 @@ export class OrdersService {
 
   async filterRecord(request) {
     let filter = { isDeleted: false };
-    if(request.from && request.to) {
-      filter['transactionDate'] = { $gte: new Date(request.from), $lte: new Date(new Date(request.to).setUTCHours(23,59,59,999)) };
-    }
-    else {        
-      if(request.from && request.from.length) {
+    if (request.from && request.to) {
+      filter['transactionDate'] = {
+        $gte: new Date(request.from),
+        $lte: new Date(new Date(request.to).setUTCHours(23, 59, 59, 999)),
+      };
+    } else {
+      if (request.from && request.from.length) {
         filter['transactionDate'] = { $gte: new Date(request.from) };
       }
-      if(request.to && request.to.length) {
+      if (request.to && request.to.length) {
         filter['transactionDate'] = { $lte: new Date(request.to) };
       }
     }
-    if(request.customer && request.customer.length) {
+    if (request.customer && request.customer.length) {
       filter['customerId'] = { $eq: request.customer };
     }
-    console.log(filter, request)
+    console.log(filter, request);
     return {
-      result: await this.orderModel.find(filter),
+      result: await this.orderModel.find(filter).sort('transactionDate'),
       message: 'filtered customer',
     };
   }
-
 }
