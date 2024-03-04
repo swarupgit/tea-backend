@@ -50,7 +50,7 @@ export class CustomerService {
     customer.name = customerDto.name;
     customer.address = customerDto.address;
     customer.email = customerDto.email;
-    customer.mobile = customer.mobile;
+    customer.mobile = customerDto.mobile;
     await customer.save({ validateBeforeSave: false });
 
     return { message: 'Customer updated successfully', result: customer };
