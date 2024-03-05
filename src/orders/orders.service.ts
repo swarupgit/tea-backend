@@ -74,7 +74,7 @@ export class OrdersService {
     let filter = { isDeleted: false };
     if (request.from && request.to) {
       filter['transactionDate'] = {
-        $gte: new Date(request.from),
+        $gte: new Date(new Date(request.from).setUTCHours(0, 0, 0, 0)),
         $lte: new Date(new Date(request.to).setUTCHours(23, 59, 59, 999)),
       };
     } else {
