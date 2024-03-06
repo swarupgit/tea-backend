@@ -15,6 +15,12 @@ export class UsersController {
     };
   }
 
+  @Public()
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+
   @Post('/change-password')
   changePassword(@Body() passwordDto: PasswordDto, @Request() request) {
     const { user } = request;
