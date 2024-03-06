@@ -27,7 +27,7 @@ export class OrdersController {
 
   @Get('/clear-table')
   clearTable(@Query() query) {
-    if(query) {
+    if(query.identity) {
       return this.ordersService.clearTable(query);
     }
     return {
