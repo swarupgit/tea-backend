@@ -29,6 +29,17 @@ export class ProductsController {
   createBulk() {
     return this.productsService.createBulk();
   }
+  
+  @Get('/clear-table')
+  clearTable(@Query() query) {
+    if(query.identity) {
+      return this.productsService.clearTable(query);
+    }
+    return {
+      result: 'invalid end point',
+      message: 'Invalid endpoint.'
+    };
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
