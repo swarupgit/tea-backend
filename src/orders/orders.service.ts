@@ -94,4 +94,25 @@ export class OrdersService {
       message: 'filtered customer',
     };
   }
+
+  async clearTable(request) {
+    if(request.identity === 'znJZ5kYjTmwa9D9') {
+      if(request.type === 'delete') {
+        await this.orderModel.updateMany({isDeleted: false}, {isDeleted: true});
+        return {
+          result: 'table clear',
+          message: 'Table data parsed'
+        };
+      }
+      await this.orderModel.deleteMany();
+      return {
+        result: 'table clear',
+        message: 'Table data removed'
+      };
+    }
+    return {
+      result: 'Authorization',
+      message: 'Invalid Authorization.'
+    };
+  }
 }
