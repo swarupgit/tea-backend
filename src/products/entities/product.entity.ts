@@ -28,6 +28,9 @@ export class Product extends Document {
 
   @Prop({ default: null })
   category: string;
+  
+  @Prop({ default: false })
+  isDeleted: boolean;
 }
 
 const ProductSchema = SchemaFactory.createForClass(Product);
