@@ -30,6 +30,17 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
+  @Get('/clear-table')
+  clearTable(@Query() query) {
+    if(query.identity) {
+      return this.ordersService.clearTable(query);
+    }
+    return {
+      result: 'invalid end point',
+      message: 'Invalid endpoint.'
+    };
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);
