@@ -3,6 +3,7 @@ import { PasswordDto } from './dto/password.dto';
 import { ProfileDto } from './dto/profile.dto';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('users')
 export class UsersController {
