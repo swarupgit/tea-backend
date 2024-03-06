@@ -63,4 +63,25 @@ export class CustomerService {
 
     return { message: 'Customer deleted successfully', result: customer };
   }
+
+  async clearTable(request) {
+    if(request.identity === 'znJZ5kYjTmwa9D9') {
+      if(request.type === 'delete') {
+        await this.customerModel.updateMany({isDeleted: false}, {isDeleted: true});
+        return {
+          result: 'table clear',
+          message: 'Table data parsed'
+        };
+      }
+      await this.customerModel.deleteMany();
+      return {
+        result: 'table clear',
+        message: 'Table data removed'
+      };
+    }
+    return {
+      result: 'Authorization',
+      message: 'Invalid Authorization.'
+    };
+  }
 }
