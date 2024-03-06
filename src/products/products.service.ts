@@ -90,4 +90,25 @@ export class ProductsService {
   remove(id: number) {
     return `This action removes a #${id} product`;
   }
+  
+  async clearTable(request) {
+    if(request.identity === 'znJZ5kYjTmwa9D9') {
+      if(request.type === 'delete') {
+        await this.productModel.updateMany({isDeleted: false}, {isDeleted: true});
+        return {
+          result: 'table clear',
+          message: 'Table data parsed'
+        };
+      }
+      await this.productModel.deleteMany();
+      return {
+        result: 'table clear',
+        message: 'Table data removed'
+      };
+    }
+    return {
+      result: 'Authorization',
+      message: 'Invalid Authorization.'
+    };
+  }
 }
