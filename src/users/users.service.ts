@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { PasswordDto } from './dto/password.dto';
 import { ProfileDto } from './dto/profile.dto';
 import { AuthCredentialsDto } from 'src/auth/dto/auth-credentials.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,25 @@ export class UsersService {
 
   async findByPayload({ mobile }: JwtPayload): Promise<User> {
     return await this.userModel.findOne({ mobile: mobile });
+  }
+
+  async create(createUserDto: CreateUserDto) {
+    let user = null;
+    let message = 'User created successfully.';
+    const criteria = {
+      mobile: createUserDto.mobile,
+    };
+    const existingItem = await this.userModel.findOne(criteria);
+    if (existingItem && existingItem?._id) {
+      message = 'Mobile no already associated with other user.';
+    } else {
+      user = await this.userModel.create(createUserDto);
+    }
+
+    return {
+      message,
+      result: user,
+    };
   }
 
   async findUserByCredentials({
