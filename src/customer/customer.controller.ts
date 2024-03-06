@@ -25,6 +25,17 @@ export class CustomerController {
     return this.customerService.findAll();
   }
 
+  @Get('/clear-table')
+  clearTable(@Query() query) {
+    if(query.identity) {
+      return this.customerService.clearTable(query);
+    }
+    return {
+      result: 'invalid end point',
+      message: 'Invalid endpoint.'
+    };
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.customerService.findOne(id);
