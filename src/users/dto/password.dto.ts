@@ -3,6 +3,9 @@ import { IsEqualTo } from '../../common/decorators/is-equal-to.decorator';
 
 export class PasswordDto {
   @IsNotEmpty()
+  currentPassword: string;
+
+  @IsNotEmpty()
   @MinLength(8)
   password: string;
 

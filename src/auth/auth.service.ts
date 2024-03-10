@@ -36,11 +36,19 @@ export class AuthService {
 
   async login(loginUserDto: AuthCredentialsDto) {
     const user = await this.usersService.findUserByCredentials(loginUserDto);
-    const token = this.createJWTToken(user);
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile,
+      role: user.role,
+      address: user.address,
+    };
+    const token = this.createJWTToken(userData);
 
     return {
       message: 'You have logged in successfully.',
-      result: { token, role: user.role },
+      result: { token, role: user.role, user: userData },
     };
   }
 

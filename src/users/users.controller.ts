@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Request } from '@nestjs/common';
 import { PasswordDto } from './dto/password.dto';
 import { ProfileDto } from './dto/profile.dto';
 import { UsersService } from './users.service';
@@ -23,12 +23,14 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @HttpCode(200)
   @Post('/change-password')
   changePassword(@Body() passwordDto: PasswordDto, @Request() request) {
     const { user } = request;
     return this.usersService.changePassword(passwordDto, user);
   }
 
+  @HttpCode(200)
   @Post('/update-profile')
   updateProfile(@Body() profileDto: ProfileDto, @Request() request) {
     const { user } = request;

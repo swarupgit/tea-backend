@@ -49,7 +49,7 @@ export class UsersService {
 
     const user = await this.userModel
       .findOne({ mobile: username, active: true })
-      .select({ password: true, mobile: true, email: true, role: true });
+      .select({ password: true, mobile: true, email: true, role: true, name: true, address: true });
 
     role = JSON.parse(role);
 
@@ -68,17 +68,39 @@ export class UsersService {
   }
 
   async changePassword(passwordDto: PasswordDto, user: User) {
+    const existUser = await this.userModel
+      .findOne({ mobile: user.mobile, active: true })
+      .select({ password: true });
+
+    // compare passwords
+    const areEqual = await this.correctPassword(existUser.password, passwordDto.currentPassword);
+
+    if (!areEqual) {
+      return { message: 'Current Password does not matched.', result: { error: true } };
+    }
+
     user.password = passwordDto.password;
     await user.save({ validateBeforeSave: false });
 
-    return { message: 'Password updated successfully' };
+    return { message: 'Password updated successfully', result: [] };
   }
 
   async updateProfile(profileDto: ProfileDto, user: User) {
     user.name = profileDto.name;
+    user.email = profileDto.email;
+    user.address = profileDto.address;
     await user.save({ validateBeforeSave: false });
 
-    return { message: 'Profile updated successfully', result: user };
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile,
+      role: user.role,
+      address: user.address,
+    };
+
+    return { message: 'Profile updated successfully', result: userData };
   }
 
   async correctPassword(
