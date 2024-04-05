@@ -11,6 +11,7 @@ import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { QuotationModule } from './quotation/quotation.module';
 import { CustomerModule } from './customer/customer.module';
+import { PaymentsModule } from './payments/payment.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CustomerModule } from './customer/customer.module';
     OrdersModule,
     QuotationModule,
     CustomerModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
