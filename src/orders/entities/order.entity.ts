@@ -58,6 +58,7 @@ OrderSchema.pre(/^find/, function (next) {
       mobile: true,
       address: true,
       email: true,
+      outStandingAmount: true,
     },
   });
   next();

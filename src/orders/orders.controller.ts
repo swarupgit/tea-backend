@@ -41,6 +41,17 @@ export class OrdersController {
     };
   }
 
+  @Get('/update-out-standing')
+  async updateOutStanding(@Query() query) {
+    if(query.identity) {
+      return await this.ordersService.updateOutStanding(query);
+    }
+    return {
+      result: 'invalid end point',
+      message: 'Invalid endpoint.'
+    };
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(id);

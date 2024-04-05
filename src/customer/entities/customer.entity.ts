@@ -17,6 +17,9 @@ export class Customer extends Document {
   @Prop({ default: null })
   email: string;
 
+  @Prop({ default: 0 })
+  outStandingAmount: string;
+
   @Prop({ default: false })
   isDeleted: boolean;
 }

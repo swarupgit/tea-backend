@@ -4,11 +4,14 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { Customer } from 'src/customer/entities/customer.entity';
+import { ObjectId } from 'typeorm';
 
 @Injectable()
 export class OrdersService {
   constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<Order>,
+    @InjectModel(Customer.name) private readonly customerModel: Model<Customer>,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -22,6 +25,12 @@ export class OrdersService {
       message = 'Duplicate invoice number.';
       throw new BadRequestException(message);
     } else {
+      const customer = await this.customerModel.findById(createOrderDto.customerId);
+      const outStanding = parseFloat(customer.outStandingAmount);
+      const creditAmount = parseFloat(createOrderDto.creditAmount);
+      const debitAmount = parseFloat(createOrderDto.debitAmount);
+      const outStandingRevised = creditAmount > 0 ? (outStanding + creditAmount) : (outStanding - debitAmount);
+      this.customerModel.updateOne({_id: createOrderDto.customerId}, {outStandingAmount: outStandingRevised});
       result = await this.orderModel.create(createOrderDto);
     }
     return {
@@ -46,6 +55,12 @@ export class OrdersService {
   }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
+    const existing = await this.orderModel.findById(id);
+    const crExisting = parseFloat(existing.creditAmount);
+    const drExisting = parseFloat(existing.debitAmount);
+    const crDiff = parseFloat(updateOrderDto.creditAmount) - crExisting;
+    const drDiff = parseFloat(updateOrderDto.debitAmount) - drExisting;
+
     const updated = await this.orderModel.findByIdAndUpdate(id, {
       type: updateOrderDto.type,
       vchNo: updateOrderDto.vchNo,
@@ -59,6 +74,12 @@ export class OrdersService {
       customerId: updateOrderDto.customerId,
       transactionDate: updateOrderDto.transactionDate,
     });
+    const customer = await this.customerModel.findById(updateOrderDto.customerId);
+      const outStanding = parseFloat(customer.outStandingAmount);
+      const creditAmount = parseFloat(updateOrderDto.creditAmount);
+      const debitAmount = parseFloat(updateOrderDto.debitAmount);
+      const outStandingRevised = creditAmount > 0 ? (outStanding + crDiff) : (outStanding - drDiff);
+      this.customerModel.updateOne({_id: updateOrderDto.customerId}, {outStandingAmount: outStandingRevised});
     console.log('updated data ', updated);
     return {
       result: updated,
@@ -108,6 +129,40 @@ export class OrdersService {
       return {
         result: 'table clear',
         message: 'Table data removed'
+      };
+    }
+    return {
+      result: 'Authorization',
+      message: 'Invalid Authorization.'
+    };
+  } 
+
+  async updateOutStanding(request) {
+    if(request.identity === 'znJZ5kYjTmwa9D9') {
+      const customers = await this.customerModel.find();
+      customers.map(async (customer) => {
+        const orders = await this.orderModel.find({customerId: customer._id, isDeleted: false });
+        const totalDebitAmount = orders
+        .reduce((carry, item) => {
+          return parseFloat(item.debitAmount) > 0
+            ? carry + parseFloat(item.debitAmount)
+            : carry + 0;
+        }, 0)
+        .toFixed(2);
+      const totalCreditAmount = orders
+        .reduce((carry, item) => {
+          return parseFloat(item.creditAmount) > 0
+            ? carry + parseFloat(item.creditAmount)
+            : carry + 0;
+        }, 0)
+        .toFixed(2);
+        const outStanding = parseFloat(totalCreditAmount) - parseFloat(totalDebitAmount);
+        // console.log(customer._id, customer.name, totalCreditAmount, totalDebitAmount, outStanding)
+        await this.customerModel.updateOne({_id: customer._id}, {outStandingAmount: outStanding});
+      })
+      return {
+        result: 'Updated',
+        message: 'Record updated'
       };
     }
     return {
