@@ -28,7 +28,7 @@ export class Payment extends Document {
   @Prop({ default: null })
   payBy: string;
 
-  @Prop({ default: null })
+  @Prop({ default: '' })
   payNote: string;
 
   @Prop({ default: null })
