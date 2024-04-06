@@ -8,6 +8,9 @@ export class CreatePaymentDto {
   transactionDate: Date;
 
   @IsNotEmpty()
+  openingBalance: string;
+
+  @IsNotEmpty()
   name: string;
 
   @IsOptional()
@@ -21,6 +24,9 @@ export class CreatePaymentDto {
 
   @IsNotEmpty()
   payBy: string;
+
+  @IsNotEmpty()
+  payNote: string;
 
   @IsOptional()
   note: string;
