@@ -10,13 +10,13 @@ export class Payment extends Document {
   @Prop({ default: new Date() })
   transactionDate: Date;
 
-  @Prop({ default: null })
+  @Prop({ default: '' })
   openingBalance: string;
 
   @Prop({ default: null })
   name: string;
 
-  @Prop({ default: null })
+  @Prop({ default: '' })
   payType: string;
 
   @Prop({ default: null })
@@ -25,13 +25,13 @@ export class Payment extends Document {
   @Prop({ default: null })
   creditAmount: string;
 
-  @Prop({ default: null })
+  @Prop({ default: '' })
   payBy: string;
 
   @Prop({ default: '' })
   payNote: string;
 
-  @Prop({ default: null })
+  @Prop({ default: '' })
   note: string;
 
   @Prop({ default: false })
